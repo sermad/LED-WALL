@@ -21,14 +21,13 @@ void ofApp::setup(){
     // initial setups
     //----------------------------------
     setupBalls();
-
+    
     // osc send to server and port
     //----------------------------------
     osc.setup("127.0.0.1", 5002);
     
     // create the texture that we will transmit via osc
     img.allocate(grabWidth, grabHeight, OF_IMAGE_COLOR);
-    img2.allocate(grabWidth, grabHeight, OF_IMAGE_COLOR);
     
     // load font for txt function
     font.loadFont("uni05_54.ttf", 6);
@@ -81,7 +80,7 @@ void ofApp::updateBalls() {
         // velocity
         //----------------------------------
         balls[i].vel += balls[i].acc;
-		
+        
 		// position
         //----------------------------------
 		balls[i].pos += balls[i].vel;
@@ -106,7 +105,7 @@ void ofApp::updateBalls() {
         // velocity
         //----------------------------------
         balls2[i].vel += balls2[i].acc;
-		
+        
 		// position
         //----------------------------------
 		balls2[i].pos += balls2[i].vel;
@@ -145,30 +144,17 @@ void ofApp::pixelToOsc(){
     // get the pixels via ref
     pixels = img.getPixelsRef();
     
-    // TODO: Fix this line
-    img2.setFromPixels(pixels, grabWidth, grabHeight, OF_IMAGE_COLOR);
-    
-    // Bundle not working
-    //ofxOscBundle oB;
-    
     for (int y = 0; y < grabHeight; y++) {
         for (int x = 0; x < grabWidth; x++) {
             
             // create temp colour
             ofColor tempc = pixels.getColor(x,y);
             
-            // don't like this
-            //int loc = (x + y*grabWidth)*3;
-            
-            //r = pixels[loc];    // reds
-            //g = pixels[loc+1];  // greens
-            //b = pixels[loc+2];  // blues
-            
             // create osc message
             ofxOscMessage oM;
             
             oM.setAddress("/ledwall/");
-
+            
             // set the r,g,b of the pixel
             oM.addIntArg(tempc.r);
             oM.addIntArg(tempc.g);
@@ -178,30 +164,10 @@ void ofApp::pixelToOsc(){
             oM.addIntArg(x);
             oM.addIntArg(y);
             
-            // add message to bundle
-            // not working
-            //oB.addMessage( oM );
-            
             // send the pixel via osc
             osc.sendMessage(oM);
-            
-            
         }
     }
-    
-    //osc.sendBundle( oB );
-    //osc.sendMessage( oM );
-    
-    //for(int m=0; m<mB.getBundleCount(), m++;) {
-        
-    //string tempc = mB.getMessageAt(m);
-    
-    //cout << "osc - " << tempc << endl;
-        
-    //}
-    
-    
-    
 }
 
 //--------------------------------------------------------------
@@ -230,7 +196,7 @@ void ofApp::draw(){
     //----------------------------------
     int brightOSC = ofMap(brightness, 0, 255, 0, 60);
     ofSetColor(brightOSC);
-    img2.draw(0, 0);
+    img.draw(0, 0);
     
     
     // view descriptions
@@ -251,8 +217,8 @@ void ofApp::draw(){
 }
 
 void ofApp::drawFunctions(){
-//--------------------------------------------------------------
-
+    //--------------------------------------------------------------
+    
     switch (drawFunction) {
         case 0:
             drawOff();
@@ -344,7 +310,7 @@ void ofApp::drawRainbowStripV(){
 
 //--------------------------------------------------------------
 void ofApp::drawWaves() {
-        
+    
     // back layer is white
     float k = 0.0;
     for(int i = 0; i < grabWidth; i+=3)
@@ -367,7 +333,7 @@ void ofApp::drawWaves() {
 
 //--------------------------------------------------------------
 void ofApp::drawWaveFade() {
-        
+    
     float k = 0.0;
     for(int i = 0; i < grabWidth; i++)
     {
@@ -442,7 +408,7 @@ void ofApp::drawText() {
 
 //--------------------------------------------------------------
 void ofApp::drawTileScroll() {
-
+    
     // knight rider-ish effect...
     ofSetRectMode(OF_RECTMODE_CENTER);
     for (int i = NUM2-1; i > -1; i--) {
@@ -468,7 +434,7 @@ void ofApp::drawBalls() {
 void ofApp::keyPressed(int key){
     
     switch (key) {
-        // number keys change the draw functions
+            // number keys change the draw functions
         case 'b':
             drawFunction = 0;   // draws only black / LEDs OFF !!
             break;
@@ -504,7 +470,7 @@ void ofApp::keyPressed(int key){
             drawFunction = 10;
             break;
             
-        // control the brightness via left/right arrow keys
+            // control the brightness via left/right arrow keys
         case OF_KEY_UP:
             brightness++;
             if (brightness > 255) {
@@ -519,12 +485,12 @@ void ofApp::keyPressed(int key){
             }
             break;
     }
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+    
 }
 
 //--------------------------------------------------------------
@@ -534,30 +500,30 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg){
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
+    
 }
