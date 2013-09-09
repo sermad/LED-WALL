@@ -8,13 +8,13 @@ void ofApp::setup(){
     ofBackground(0, 0, 0);        // background color is black
     ofEnableSmoothing();
     ofSetVerticalSync(true);  // disabled for now...
-    ofSetFrameRate(15);
+    ofSetFrameRate(30);
     
     // initial variables
     //----------------------------------
     grabWidth = 60;         // width of data
     grabHeight = 8;         // height of data
-    brightness = 40;       // brightness
+    brightness = 255;       // brightness
     counterShape = 0.0f;    // shape sin
     drawFunction = 1;         // initial draw function
     
@@ -142,29 +142,66 @@ void ofApp::pixelToOsc(){
     // make a copy of the area we're sending via osc
     img.grabScreen(0, 240, grabWidth, grabHeight);
     
-    // get the pixels
-    pixels = img.getPixels();
+    // get the pixels via ref
+    pixels = img.getPixelsRef();
+    
+    // TODO: Fix this line
     img2.setFromPixels(pixels, grabWidth, grabHeight, OF_IMAGE_COLOR);
+    
+    // Bundle not working
+    //ofxOscBundle oB;
     
     for (int y = 0; y < grabHeight; y++) {
         for (int x = 0; x < grabWidth; x++) {
-            int loc = (x + y*grabWidth)*3;
             
-            r = pixels[loc];    // reds
-            g = pixels[loc+1];  // greens
-            b = pixels[loc+2];  // blues
+            // create temp colour
+            ofColor tempc = pixels.getColor(x,y);
             
-            // send per pixel data per osc message
-            ofxOscMessage mP;
-            mP.setAddress("/pixels/color/rgbxy");
-            mP.addIntArg(r);
-            mP.addIntArg(g);
-            mP.addIntArg(b);
-            mP.addIntArg(x);
-            mP.addIntArg(y);
-            osc.sendMessage(mP);
+            // don't like this
+            //int loc = (x + y*grabWidth)*3;
+            
+            //r = pixels[loc];    // reds
+            //g = pixels[loc+1];  // greens
+            //b = pixels[loc+2];  // blues
+            
+            // create osc message
+            ofxOscMessage oM;
+            
+            oM.setAddress("/ledwall/");
+
+            // set the r,g,b of the pixel
+            oM.addIntArg(tempc.r);
+            oM.addIntArg(tempc.g);
+            oM.addIntArg(tempc.b);
+            
+            // set the x,y of the pixel
+            oM.addIntArg(x);
+            oM.addIntArg(y);
+            
+            // add message to bundle
+            // not working
+            //oB.addMessage( oM );
+            
+            // send the pixel via osc
+            osc.sendMessage(oM);
+            
+            
         }
     }
+    
+    //osc.sendBundle( oB );
+    //osc.sendMessage( oM );
+    
+    //for(int m=0; m<mB.getBundleCount(), m++;) {
+        
+    //string tempc = mB.getMessageAt(m);
+    
+    //cout << "osc - " << tempc << endl;
+        
+    //}
+    
+    
+    
 }
 
 //--------------------------------------------------------------

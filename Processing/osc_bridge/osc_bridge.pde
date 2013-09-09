@@ -1,3 +1,10 @@
+/* 
+
+Code modified from Paul Stoffregen
+Copyright (c) 2013 Paul Stoffregen, PJRC.COM, LLC
+
+*/
+
 import processing.serial.*;
 import java.awt.Rectangle;
 
@@ -25,10 +32,10 @@ float framerate=30;
 
 void setup() {
   
-  // start oscP5, telling it to listen for incoming messages at port 5001 */
+  // start oscP5, telling it to listen for incoming messages at port 5002 */
   oscP5 = new OscP5(this,5002);
  
-  // set the remote location to be the localhost on port 5001
+  // set the remote location to be the localhost on port 5002
   myRemoteLocation = new NetAddress("127.0.0.1",5002);
   
   String[] list = Serial.list();
@@ -212,10 +219,9 @@ void draw() {
   
 }
 
-void oscEvent(OscMessage theOscMessage) 
-{
+void oscEvent(OscMessage theOscMessage) {
   
-  if (theOscMessage.checkAddrPattern("/pixels/color/rgbxy") == true) {
+  if (theOscMessage.checkAddrPattern("/ledwall/") == true) {
     
     r = theOscMessage.get(0).intValue();
     g = theOscMessage.get(1).intValue();
@@ -224,17 +230,13 @@ void oscEvent(OscMessage theOscMessage)
     locx = theOscMessage.get(3).intValue();
     locy = theOscMessage.get(4).intValue();
 
+    // set the pixels with the osc data
     img.loadPixels();
-    img.pixels[locy*(60)+locx] = color(r, g, b);
+    img.pixels[locy*ledWidth+locx] = color(r, g, b);
     img.updatePixels();
 
-    println("r == " + r + " | " + "g == " + g + " | " + "b == " + b + " | " + "x == " + locx + " | " + "y == " + locy);
+    //println("r == " + r + " | " + "g == " + g + " | " + "b == " + b + " | " + "x == " + locx + " | " + "y == " + locy);
     
   }
   
 }
-
-
-
-
-

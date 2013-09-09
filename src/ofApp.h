@@ -49,7 +49,10 @@ class ofApp : public ofBaseApp{
     void pixelToOsc();
     ofxOscSender osc;
     ofImage img, img2;
-    unsigned char * pixels;
+    
+    //unsigned char * pixels;
+    ofPixels pixels;
+    
     unsigned char r, g, b;
     int grabWidth, grabHeight;
     
